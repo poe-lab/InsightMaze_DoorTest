@@ -7,8 +7,8 @@ class Door {
     void doorOpen();
     void doorClose();
     bool isOpen(); // tells you what state the door is in
-
-  private: // these variables are not supposed to be directly used
+    
+  //private: // these variables are not supposed to be directly used but for debugging purposes its okay
     int m_pin;
     bool m_isOpen;
     int m_posOpen;

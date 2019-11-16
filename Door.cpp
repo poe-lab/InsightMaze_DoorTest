@@ -11,27 +11,49 @@ Door::Door(int pin, int posOpen, int posClose) { //
 
 void Door::doorSetup() { //
   m_servo.attach(m_pin);
+  m_servo.write(m_posOpen);
 }
 
 void Door::doorOpen() { //
   if (!m_isOpen) {
-    m_servo.write(m_posOpen);
+    if (m_servo.read() > m_posOpen)
+    {
+      while(m_servo.read() > m_posOpen)
+      {
+        m_servo.write(m_servo.read()-1);
+        delay(10);
+      }
+    }
+    if (m_servo.read() < m_posOpen)
+    {
+      while(m_servo.read() < m_posOpen)
+      {
+        m_servo.write(m_servo.read()+1);
+        delay(10);
+      }
+    }
     m_isOpen = true;
   }
 }
 
 void Door::doorClose() {
   if (m_isOpen) {
-    //Fast close
-    //    m_servo.write(m_posClose);
-    // Slow Close
-    int pos = m_posOpen;
-    while (pos != m_posClose) {
-      m_servo.write(pos);
-      if (m_posOpen < m_posClose) pos++; //incremental position movement by 1
-      else pos--;
+    if(m_servo.read() < m_posClose)
+    {
+      while(m_servo.read() < m_posClose)
+      {
+        m_servo.write(m_servo.read()+1);
+        delay(10);
+      }
     }
-
+    else if(m_servo.read() > m_posClose)
+    {
+      while(m_servo.read() > m_posClose)
+      {
+        m_servo.write(m_servo.read()-1);
+        delay(10);
+      }
+    }
     m_isOpen = false;
   }
 
@@ -39,5 +61,4 @@ void Door::doorClose() {
 
 bool Door::isOpen() {
   return m_isOpen;
-  
 }
